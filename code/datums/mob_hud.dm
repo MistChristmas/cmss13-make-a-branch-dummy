@@ -378,7 +378,7 @@ GLOBAL_LIST_INIT_TYPED(huds, /datum/mob_hud, list(
 	if(stat == DEAD || status_flags & FAKEDEATH)
 		holder.icon_state = "hudhealth-100"
 	else
-		var/percentage = round(health*100/species.total_health, 10)
+		var/percentage = round(health*100/species.total_health, 5)
 		if(percentage > -1)
 			holder.icon_state = "hudhealth[percentage]"
 		else if(percentage > -49)
