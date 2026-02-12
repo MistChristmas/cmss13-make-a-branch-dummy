@@ -235,7 +235,7 @@
 		else
 			P.play_hit_effect(M)
 
-/datum/ammo/proc/fire_bonus_projectiles(obj/projectile/original_projectile, gun_damage_mult = 1, projectile_max_range_add = 0, bonus_proj_scatter = 0, pointblank_bonus = FALSE)
+/datum/ammo/proc/fire_bonus_projectiles(obj/projectile/original_projectile, gun_damage_mult = 1, projectile_max_range_add = 0, bonus_proj_scatter = 0)
 	set waitfor = 0
 
 	var/turf/curloc = get_turf(original_projectile.shot_from)
