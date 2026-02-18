@@ -81,7 +81,7 @@
 	/// How much to make the bullet fall off by accuracy-wise when closer than the ideal range
 	var/accuracy_range_falloff = 10
 
-	/// Is this a lone (0), original (1), or bonus (2) projectile. Used in gun.dm and fire_bonus_projectiles() currently.
+	/// Is this a lone (PROJECTILE_LONE), original (PROJECTILE_ORIGINAL), or bonus (PROJECTILE_BONUS) projectile. Used in gun.dm and fire_bonus_projectiles() currently.
 	var/bonus_projectile_check = PROJECTILE_LONE
 
 	/// What atom did this last receive a registered signal from? Used by damage_boost.dm
