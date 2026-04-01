@@ -116,7 +116,7 @@
 		if(SIZE_TINY)
 			size_bonus = 1.1
 		if(SIZE_SMALL)
-			size_bonus = 1.3
+			size_bonus = 1.4
 		if(SIZE_MEDIUM)
 			size_bonus = 0.9
 		else
