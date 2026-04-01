@@ -84,11 +84,13 @@
 	attack_verb = list("smashed", "beaten", "slammed", "struck", "smashed", "battered", "cracked")
 	hitsound = 'sound/weapons/genhit3.ogg'
 	shield_flags = CAN_SHIELD_BASH
-	var/swing_prepared_time = 3 SECONDS
+	var/swing_prepared_time = 6 SECONDS
 	var/next_swing
 	var/prepared_to_swing = FALSE
 	var/list/hit_message_list = list("bunts it", "whacks it", "sends it", "drives it hard", "launches it flying")
+	var/list/self_hit_message_list = list("bunt it", "whack it", "send it", "drive it hard", "launch it flying")
 	var/list/miss_message_list = list("swings and misses!", "swings way too early!","swings late!")
+	var/list/self_miss_message_list = list("swing and miss!", "swing way too early!","swing late!")
 
 /obj/item/weapon/baseballbat/attack_self(mob/living/carbon/human/user)
 	. = ..()
@@ -97,6 +99,7 @@
 		return
 	prepared_to_swing = TRUE
 	user.visible_message(SPAN_NOTICE("[user] prepares to swing [src]."), SPAN_NOTICE("You prepare to swing [src]."))
+	user.balloon_alert_to_viewers("prepares to swing", "You prepare to swing")
 	RegisterSignal(user, COMSIG_MOB_PREPARED_SWING, PROC_REF(swing))
 	next_swing = world.time + swing_prepared_time
 	addtimer(CALLBACK(src, PROC_REF(removed_prepared_swing), user), swing_prepared_time)
@@ -133,8 +136,9 @@
 	launch_data.relaunched = TRUE
 
 	if(prob(hit_chance))
-		user.visible_message(SPAN_NOTICE("[user] hits the [hit_object] and [hit_message_list[ceil(range/2)]] [launch == HIGH_LAUNCH ? "in a high arc" : "in a flat arc"] with [src]!"), \
-		SPAN_NOTICE("You hits the [hit_object] and [hit_message_list[ceil(range/2)]] [launch == HIGH_LAUNCH ? "in a high arc" : "in a flat arc"] with [src]!"))
+		var/hit_message_index = ceil(range/2)
+		user.visible_message(SPAN_NOTICE("[user] hits the [hit_object] and [hit_message_list[hit_message_index]] [launch == HIGH_LAUNCH ? "in a high arc" : "in a flat arc"] with [src]!"), \
+		SPAN_NOTICE("You hit the [hit_object] and [self_hit_message_list[hit_message_index]] [launch == HIGH_LAUNCH ? "in a high arc" : "in a flat arc"] with [src]!"))
 
 		do_item_attack_animation(hit_object, null, src)
 		hit_object.throw_in_random_direction_from_arc(range, speed, user, TRUE, launch, directional = user.dir)
@@ -143,11 +147,12 @@
 		hit_object.forceMove(user.loc)
 
 		if(prob(90))
-			var/miss_message = pick(miss_message_list)
-			user.visible_message(SPAN_NOTICE("[user] [miss_message]"), SPAN_NOTICE("You [miss_message]"))
+			var/miss_message_index = rand(1, length(miss_message_list))
+			user.visible_message(SPAN_NOTICE("[user] [miss_message_list[miss_message_index]]"))
+			user.balloon_alert_to_viewers(miss_message_list[miss_message_index], self_miss_message_list[miss_message_index])
 		else
 			user.visible_message(SPAN_NOTICE("[user] doesn't swing at all!"), SPAN_NOTICE("You were way too late and don't swing at all! How embarassing!"))
-
+			user.balloon_alert_to_viewers("doesn't swing at all!", "doesn't swing at all!")
 		hit_object.throw_atom(launch_data.target, launch_data.range, launch_data.speed, user, TRUE, NORMAL_LAUNCH)
 		return COMSIG_MOB_PREPARED_SWING_PASSTHROUGH
 
